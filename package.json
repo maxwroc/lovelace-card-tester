@@ -1,0 +1,20 @@
+{
+  "name": "lovelace-card-tester",
+  "version": "1.0.0",
+  "description": "Website for testing lovelace cards",
+  "main": "preview.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxwroc/lovelace-card-tester.git"
+  },
+  "author": "Max Chodorowski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maxwroc/lovelace-card-tester/issues"
+  },
+  "homepage": "https://github.com/maxwroc/lovelace-card-tester#readme",
+  "dependencies": {}
+}
