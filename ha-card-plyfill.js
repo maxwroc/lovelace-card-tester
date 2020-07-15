@@ -50,9 +50,10 @@ customElements.define("ha-icon", class extends LitElement {
             justify-content: center;
             position: relative;
             vertical-align: middle;
-            fill: #FFFFFF;
+            fill: currentcolor;
             width: var(--mdc-icon-size, 24px);
             height: var(--mdc-icon-size, 24px);
+            margin: 13px;
         }
         `;
     }
