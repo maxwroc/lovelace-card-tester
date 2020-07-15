@@ -1,6 +1,6 @@
 
 class CardController {
-    cardSource = "https://github.com/maxwroc/battery-state-card/releases/download/v1.4.0/battery-state-card.js";
+    cardSource = "cards/dist/battery-state-card.js" //"https://github.com/maxwroc/battery-state-card/releases/download/v1.4.0/battery-state-card.js";
 
     cardType = null;
 
@@ -61,6 +61,7 @@ class CardController {
 
     updateConfig() {
 
+        let errorLine = -1;
         try {
             this.config = jsyaml.load(this.editor.config.getCode());
 
@@ -83,8 +84,19 @@ class CardController {
             this.updateState();
         }
         catch (e) {
-            console.log(e);
+            if (e.mark) {
+                errorLine = e.mark.line - 1;
+            }
+            else {
+                console.log(e);
+            }
         }
+
+        setTimeout(() => {
+            $("#configEditor .codeflask__lines__line").each((i, elem) => {
+                $(elem).css("backgroundColor", i == errorLine ? "#ffacac" : "none");
+            });
+        });
     }
 
     updateState() {
@@ -92,17 +104,35 @@ class CardController {
             return;
         }
 
+        const jsonStr = this.editor.state.getCode();
+
+        let errorLine = -1;
+
         try {
             const hass = {
-                states: JSON.parse(this.editor.state.getCode()),
+                states: JSON.parse(jsonStr),
                 localize: key => `[${key}]`
             }
 
             this.card.hass = hass;
         }
         catch (e) {
-            console.log(e)
+            const searchString = "in JSON at position ";
+            const foundIndex = e.message.indexOf(searchString);
+            if (foundIndex != -1) {
+                const errorPos = Number(e.message.substr(foundIndex + searchString.length));
+                errorLine = jsonStr.split("\n").length - jsonStr.substr(errorPos).split("\n").length;
+            }
+            else {
+                console.log(e);
+            }
         }
+
+        setTimeout(() => {
+            $("#haStateEditor .codeflask__lines__line").each((i, elem) => {
+                $(elem).css("backgroundColor", i == errorLine ? "#ffacac" : "none");
+            });
+        });
     }
 }
 
