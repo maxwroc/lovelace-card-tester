@@ -51,7 +51,6 @@ class CardController {
             this.card.setConfig(this.config);
             $("#cardContainer").html("").append(this.card);
 
-            console.log("loaded");
             this.cardLoaded = true;
 
             // triggering config update
@@ -147,8 +146,6 @@ class CardController {
         }).then(state => {
             $("#save").prop("disabled", false);
 
-            console.log(state);
-
             let output = "Something went wrong";
             try {
                 if (state.success) {
@@ -164,7 +161,6 @@ class CardController {
                 }
             }
             catch (e) {
-                console.log(e);
                 output = "Error: " + e.message;
             }
 
