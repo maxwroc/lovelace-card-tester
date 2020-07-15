@@ -27,3 +27,10 @@ body {
     background-color: #383c45;
     color: #FFFFFF;
 }
+
+.codeflask.codeflask--has-line-numbers pre.codeflask__flatten {
+    width: auto;
+}
+.codeflask__lines__line {
+    background-color: #eeeeee;
+}
