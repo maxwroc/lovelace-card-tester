@@ -84,8 +84,7 @@ class CardController {
         }
         catch (e) {
             if (e.mark) {
-                errorLine = e.mark.line - 1;
-                console.log(e);
+                errorLine = e.mark.line;
             }
             else {
                 console.log(e);
