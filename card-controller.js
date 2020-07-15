@@ -1,6 +1,5 @@
 
 class CardController {
-    cardSource = "cards/dist/battery-state-card.js" //"https://github.com/maxwroc/battery-state-card/releases/download/v1.4.0/battery-state-card.js";
 
     cardType = null;
 
@@ -15,30 +14,45 @@ class CardController {
 
     cardLoaded = false;
 
-    constructor() {
-        this.addCardSource();
+    constructor(data) {
+        this.addCardSource(data.cardSource);
 
         this.editor.config = new CodeFlask("#configEditor", { language: "yaml", lineNumbers: true });
         this.editor.config.addLanguage("yaml", CodeLangs.languages["yaml"]);
         // trigger re-rendering
-        this.editor.config.updateCode(this.editor.config.getCode());
+        this.editor.config.updateCode(data.config);
 
         this.editor.state = new CodeFlask("#haStateEditor", { language: "json", lineNumbers: true });
         this.editor.state.addLanguage("json", CodeLangs.languages["json"]);
         // trigger re-rendering
-        this.editor.state.updateCode(this.editor.state.getCode());
-
+        this.editor.state.updateCode(JSON.stringify(data.hassState, null, 2));
 
         this.editor.config.onUpdate(() => this.updateConfig());
         this.editor.state.onUpdate(() => this.updateState());
+
+        $("#save").click(() => {
+            $("#save").prop("disabled", true);
+            Storage.save({
+                cardSource: data.cardSource,
+                config: this.editor.config.getCode(),
+                hassState: JSON.parse(this.editor.state.getCode())
+            }).then(result => {
+                $("#save").prop("disabled", false);
+                $("#savedLink").val(result);
+                console.log(result);
+            }).catch(e => {
+                $("#save").prop("disabled", false);
+                console.error(e);
+            })
+        })
 
         // start processing config
         this.updateConfig();
     }
 
-    addCardSource() {
+    addCardSource(source) {
         const elem = document.createElement("script");
-        elem.setAttribute("src", this.cardSource);
+        elem.setAttribute("src", source);
         elem.setAttribute("type", "text/javascript");
         $("head").append(elem);
     }
@@ -47,7 +61,7 @@ class CardController {
         this.cardLoaded = false;
 
         customElements.whenDefined(this.cardType).then(() => {
-            this.card = document.createElement(this.cardType);
+            this.card = document.createElement(this.cardType.replace("custom:"));
             this.card.setConfig(this.config);
             $("#cardContainer").html("").append(this.card);
 
@@ -86,6 +100,7 @@ class CardController {
         catch (e) {
             if (e.mark) {
                 errorLine = e.mark.line - 1;
+                console.log(e);
             }
             else {
                 console.log(e);
@@ -136,4 +151,6 @@ class CardController {
     }
 }
 
-$(() => new CardController());
+$(() => {
+    Storage.load().then(data => new CardController(data))
+});
