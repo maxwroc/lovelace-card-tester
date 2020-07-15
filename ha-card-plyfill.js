@@ -11,7 +11,6 @@ customElements.define("ha-card", class extends LitElement {
         return css`
         :host {
             display: block;
-            max-width: 500px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;

@@ -2,34 +2,73 @@
 const example = {
     cardSource: "https://github.com/maxwroc/battery-state-card/releases/download/v1.4.0/battery-state-card.js",
     config: `type: "battery-state-card"
-title: Filtersr
+title: Filters
 sort_by_level: "asc"
 bulk_rename:
   - from: "Battery Level" # simple string replace (note: "to" is not required if you want to remove string)
     to: "sensor"
   - from: "/\\\\s(temperature|temp)\\\\s/" # regular expression
     to: " temp. "
-entities:
-    # entities requiring additional properties can be added explicitly
-  - entity: sensor.temp_outside_battery_numeric
-    multiplier: 10
-    name: "Outside temp. sensor"
 filter:
   include: # filters for auto-adding
     - name: entity_id # entities which id ends with "_battery_level"
+      operator: matches
       value: "*_battery_level"
     - name: attributes.device_class # and entities which device_class attribute equals "battery"
       value: "battery"
-    - name: attributes.battery_level`,
+    - name: attributes.battery_level
+  exclude:
+    - name: state
+      value: 100`,
     hassState: {
-        "climate.dachboden": {
-            "entity": "climate.dachboden",
+        "switch.living_room": {
+            "entity_id": "switch.living_room",
             "state": "off",
             "attributes": {
                 "temperature": 0,
-                "battery_level": 22,
+                "battery_level": 60,
                 "device_class": "battery",
-                "friendly_name": "Dachboden"
+                "friendly_name": "Living room switch"
+            }
+        },
+        "sensor.motion_sensor_battery_level": {
+            "entity_id": "sensor.motion_sensor_battery_level",
+            "state": 22,
+            "attributes": {
+                "friendly_name": "Motion sensor Battery level"
+            }
+        },
+        "sensor.living_room_temp": {
+            "entity_id": "sensor.living_room_temp",
+            "state": 40,
+            "attributes": {
+                "friendly_name": "Living room temperature Battery level",
+                "device_class": "battery"
+            }
+        },
+        "switch.living_room2": {
+            "entity_id": "switch.living_room2",
+            "state": "off",
+            "attributes": {
+                "temperature": 0,
+                "battery_level": 100,
+                "device_class": "battery",
+                "friendly_name": "Living room switch 2"
+            }
+        },
+        "sensor.motion_sensor_battery_level2": {
+            "entity_id": "sensor.motion_sensor_battery_level2",
+            "state": 100,
+            "attributes": {
+                "friendly_name": "Motion sensor Battery level 2"
+            }
+        },
+        "sensor.living_room_temp2": {
+            "entity_id": "sensor.living_room_temp2",
+            "state": 100,
+            "attributes": {
+                "friendly_name": "Living room temperature Battery level 2",
+                "device_class": "battery"
             }
         }
     }
