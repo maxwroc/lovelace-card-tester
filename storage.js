@@ -35,14 +35,14 @@ filter:
             "entity_id": "sensor.motion_sensor_battery_level",
             "state": 22,
             "attributes": {
-                "friendly_name": "Motion sensor Battery level"
+                "friendly_name": "Motion sensor Battery Level"
             }
         },
         "sensor.living_room_temp": {
             "entity_id": "sensor.living_room_temp",
             "state": 40,
             "attributes": {
-                "friendly_name": "Living room temperature Battery level",
+                "friendly_name": "Living room temperature Battery Level",
                 "device_class": "battery"
             }
         },
@@ -60,14 +60,14 @@ filter:
             "entity_id": "sensor.motion_sensor_battery_level2",
             "state": 100,
             "attributes": {
-                "friendly_name": "Motion sensor Battery level 2"
+                "friendly_name": "Motion sensor Battery Level 2"
             }
         },
         "sensor.living_room_temp2": {
             "entity_id": "sensor.living_room_temp2",
             "state": 100,
             "attributes": {
-                "friendly_name": "Living room temperature Battery level 2",
+                "friendly_name": "Living room temperature Battery Level 2",
                 "device_class": "battery"
             }
         }
