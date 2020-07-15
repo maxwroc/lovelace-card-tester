@@ -30,21 +30,7 @@ class CardController {
         this.editor.config.onUpdate(() => this.updateConfig());
         this.editor.state.onUpdate(() => this.updateState());
 
-        $("#save").click(() => {
-            $("#save").prop("disabled", true);
-            Storage.save({
-                cardSource: data.cardSource,
-                config: this.editor.config.getCode(),
-                hassState: JSON.parse(this.editor.state.getCode())
-            }).then(result => {
-                $("#save").prop("disabled", false);
-                $("#savedLink").val(result);
-                console.log(result);
-            }).catch(e => {
-                $("#save").prop("disabled", false);
-                console.error(e);
-            })
-        })
+        $("#save").click(() => this.save(data));
 
         // start processing config
         this.updateConfig();
@@ -148,6 +134,45 @@ class CardController {
                 $(elem).css("backgroundColor", i == errorLine ? "#ffacac" : "none");
             });
         });
+    }
+
+    save(data) {
+        // disabling button to avoid multiclick
+        $("#save").prop("disabled", true);
+
+        Storage.save({
+            cardSource: data.cardSource,
+            config: this.editor.config.getCode(),
+            hassState: JSON.parse(this.editor.state.getCode())
+        }).then(state => {
+            $("#save").prop("disabled", false);
+
+            console.log(state);
+
+            let output = "Something went wrong";
+            try {
+                if (state.success) {
+                    const url = new URL(location.href);
+                    url.searchParams.set("key", state.id);
+                    output = url.href;
+                    document.title = this.cardType + " - Lovelace card tester";
+                    window.history.replaceState(null, document.title, output);
+                }
+                else {
+                    console.log(state);
+                    output = "Failed to save the data";
+                }
+            }
+            catch (e) {
+                console.log(e);
+                output = "Error: " + e.message;
+            }
+
+            $("#savedLink").val(output);
+        }).catch(e => {
+            $("#save").prop("disabled", false);
+            console.error(e);
+        })
     }
 }
 
