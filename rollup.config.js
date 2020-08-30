@@ -13,7 +13,7 @@ export default function (args) {
     return {
         input: 'src/index.ts',
         output: {
-          file: "index.js",
+          file: "docs/index.js",
           format: 'iife',
           sourcemap: true,
           sourcemapExcludeSources: true,

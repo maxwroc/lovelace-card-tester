@@ -1,14 +1,19 @@
 import { LitElement, html, css, property } from "lit-element";
 
-export class HomeAssistantMain extends LitElement {
+// this is just to support a hacky way of getting the css/html functions in some cards
+class HomeAssistantMainBase extends LitElement {
+    css = css;
+    html = html;
+}
+
+HomeAssistantMainBase.prototype.css = css;
+HomeAssistantMainBase.prototype.html = html;
+
+export class HomeAssistantMain extends HomeAssistantMainBase {
     render() {
         return html`<p>home-assistant-main</p>`;
     }
 }
-
-var le = Object.getPrototypeOf(HomeAssistantMain);
-le.css = css;
-le.html = html;
 
 export class HaCard extends LitElement {
     static get styles() {

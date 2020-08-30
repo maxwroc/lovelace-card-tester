@@ -7,6 +7,5 @@ customElements.define("ha-card", <any>HaCard);
 customElements.define("ha-icon", <any>HaIcon);
 
 $(() => {
-    setTimeout( () =>
-    Storage.load().then(data => new CardController(data)), 5000);
+    Storage.load().then(data => new CardController(data));
 });
