@@ -1,28 +1,34 @@
+import { IConfigData, Storage } from "./storage";
+//import * as CodeFlask from "codeflask";
 
-class CardController {
+declare var CodeLangs: any;
+declare var jsyaml: any;
+declare var CodeFlask: any;
 
-    cardType = null;
+export class CardController {
 
-    card = null;
+    private cardType: string = "";
 
-    config = null;
+    private card: ICard | null = null;
 
-    editor = {
-        config: null,
-        state: null
-    }
+    private config: any = null;
+
+    private editor: { config: any, state: any };
 
     cardLoaded = false;
 
-    constructor(data) {
+    constructor(data: IConfigData) {
         this.addCardSource(data.cardSource);
 
-        this.editor.config = new CodeFlask("#configEditor", { language: "yaml", lineNumbers: true });
+        this.editor = {
+            config: new CodeFlask("#configEditor", { language: "yaml", lineNumbers: true }),
+            state: new CodeFlask("#haStateEditor", { language: "json", lineNumbers: true })
+        };
+
         this.editor.config.addLanguage("yaml", CodeLangs.languages["yaml"]);
         // trigger re-rendering
         this.editor.config.updateCode(data.config);
 
-        this.editor.state = new CodeFlask("#haStateEditor", { language: "json", lineNumbers: true });
         this.editor.state.addLanguage("json", CodeLangs.languages["json"]);
         // trigger re-rendering
         this.editor.state.updateCode(JSON.stringify(data.hassState, null, 2));
@@ -36,7 +42,7 @@ class CardController {
         this.updateConfig();
     }
 
-    addCardSource(source) {
+    addCardSource(source: string) {
         const elem = document.createElement("script");
         elem.setAttribute("src", source);
         elem.setAttribute("type", "text/javascript");
@@ -47,7 +53,7 @@ class CardController {
         this.cardLoaded = false;
 
         customElements.whenDefined(this.cardType).then(() => {
-            this.card = document.createElement(this.cardType.replace("custom:"));
+            this.card = document.createElement(this.cardType.replace("custom:", "")) as ICard;
             this.card.setConfig(this.config);
             $("#cardContainer").html("").append(this.card);
 
@@ -78,7 +84,7 @@ class CardController {
                 return;
             }
 
-            this.card.setConfig(this.config);
+            this.card!.setConfig(this.config);
 
             this.updateState();
         }
@@ -110,10 +116,10 @@ class CardController {
         try {
             const hass = {
                 states: JSON.parse(jsonStr),
-                localize: key => `[${key}]`
+                localize: (key: string) => `[${key}]`
             }
 
-            this.card.hass = hass;
+            this.card!.hass = hass;
         }
         catch (e) {
             const searchString = "in JSON at position ";
@@ -134,7 +140,7 @@ class CardController {
         });
     }
 
-    save(data) {
+    save(data: IConfigData) {
         // disabling button to avoid multiclick
         $("#save").prop("disabled", true);
 
@@ -171,6 +177,7 @@ class CardController {
     }
 }
 
-$(() => {
-    Storage.load().then(data => new CardController(data))
-});
+interface ICard extends HTMLElement {
+    hass: any;
+    setConfig(config: any): void;
+}

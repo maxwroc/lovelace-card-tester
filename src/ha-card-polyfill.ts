@@ -1,12 +1,16 @@
-import { LitElement, html, css } from "https://unpkg.com/lit-element@2.0.0/lit-element.js?module";
+import { LitElement, html, css, property } from "lit-element";
 
-customElements.define("home-assistant-main", class extends LitElement {
+export class HomeAssistantMain extends LitElement {
     render() {
         return html`<p>home-assistant-main</p>`;
     }
-});
+}
 
-customElements.define("ha-card", class extends LitElement {
+var le = Object.getPrototypeOf(HomeAssistantMain);
+le.css = css;
+le.html = html;
+
+export class HaCard extends LitElement {
     static get styles() {
         return css`
         :host {
@@ -39,10 +43,10 @@ customElements.define("ha-card", class extends LitElement {
     render() {
         return html`<slot></slot>`;
     }
-});
+}
 
-customElements.define("ha-icon", class extends LitElement {
-    icons = {
+export class HaIcon extends LitElement {
+    private icons: { [key: string]: string } = {
         "mdi:battery-outline": `M16,20H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z`,
         "mdi:battery-10": `M16,18H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z`,
         "mdi:battery-20": `M16,17H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z`,
@@ -68,11 +72,8 @@ customElements.define("ha-icon", class extends LitElement {
         "mdi:battery-charging-100": `M23,11H20V4L15,14H18V22M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4Z`,
     };
 
-    static get properties() {
-        return {
-            icon: String
-        }
-    }
+    @property({type: String})
+    private icon: string = "";
 
     static get styles() {
         return css`
@@ -92,7 +93,4 @@ customElements.define("ha-icon", class extends LitElement {
     render() {
         return html`<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="${this.icons[this.icon]}" /></svg>`;
     }
-});
-
-LitElement.prototype.css = css;
-LitElement.prototype.html = html;
+}

@@ -1,5 +1,11 @@
+export interface IConfigData {
+    cardSource: string;
+    config: string;
+    hassState: any;
+}
 
-const example = {
+
+const example: IConfigData = {
     cardSource: "https://github.com/maxwroc/battery-state-card/releases/download/v1.4.0/battery-state-card.js",
     config: `type: "battery-state-card"
 title: Filters
@@ -74,11 +80,11 @@ filter:
     }
 }
 
-class Storage {
+export class Storage {
 
     static secret = "$2b$10$/FL2EcEvEoUO19I7bO5da.q0YYqAgmTANU2kvh.WBP8FYTdP.6UYa";
 
-    static save(data) {
+    static save(data: IConfigData): Promise<any> {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: `https://api.jsonbin.io/b`,
@@ -94,7 +100,7 @@ class Storage {
         });
     }
 
-    static get(key) {
+    static get(key: string): Promise<IConfigData> {
         //const key = "5f0f1d9ac58dc34bf5d3f44c";
 
         return new Promise((resolve, reject) => {
@@ -109,7 +115,7 @@ class Storage {
         });
     }
 
-    static load() {
+    static load(): Promise<IConfigData> {
         const url = new URL(location.href);
         const key = url.searchParams.get("key");
         return new Promise((resolve, reject) => {
