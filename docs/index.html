@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Lovelace card tester</title>
+        <link type="text/css" rel="stylesheet" href="style.css" />
+        <script src="libs/codeflask.min.js"></script>
+        <script src="libs/prism.js"></script>
+        <script src="libs/js-yaml.min.js"></script>
+        <script src="libs/jquery.min.js"></script>
+        <script src="index.js"></script>
+    </head>
+    <body>
+        <div class="contentWrapper">
+            <div style="flex: 1">
+                <ha-card>
+                    <div class="card-header">Config</div>
+                    <div class="card-content">
+                        <div id="configEditor" style="position: relative; min-height: 300px;"></div>
+                    </div>
+                </ha-card>
+                <ha-card>
+                    <div class="card-header">Home assistant state</div>
+                    <div class="card-content">
+                        <div id="haStateEditor" style="position: relative; min-height: 300px;"></div>
+                    </div>
+                </ha-card>
+                <ha-card>
+                    <div class="card-header">Share</div>
+                    <div class="card-content" style="display: flex">
+                        <button id="save">Get url</button> <input type="text" placeholder="Generated url" id="savedLink" style="flex: 1; margin-left: 10px" />
+                    </div>
+                </ha-card>
+            </div>
+            <div id="cardContainer"></div>
+        </div>
+    </body>
+</html>

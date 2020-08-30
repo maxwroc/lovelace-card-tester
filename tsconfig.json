@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "rootDir": "src",
+        "target": "ES6",
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "noImplicitThis": true,
+        "strict": true,
+        "experimentalDecorators": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "moduleResolution": "node"
+    },
+    "exclude": [
+        "dist/**/*"
+    ]
+}
