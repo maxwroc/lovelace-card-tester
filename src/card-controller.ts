@@ -1,4 +1,5 @@
 import { IConfigData, Storage } from "./storage";
+import { logger } from "./logger";
 //import * as CodeFlask from "codeflask";
 
 declare var CodeLangs: any;
@@ -6,6 +7,8 @@ declare var jsyaml: any;
 declare var CodeFlask: any;
 
 export class CardController {
+
+    private cardSource: string = "";
 
     private cardType: string = "";
 
@@ -18,6 +21,7 @@ export class CardController {
     cardLoaded = false;
 
     constructor(data: IConfigData) {
+        this.cardSource = data.cardSource;
         this.addCardSource(data.cardSource);
 
         this.editor = {
@@ -84,7 +88,12 @@ export class CardController {
                 return;
             }
 
-            this.card!.setConfig(this.config);
+            try {
+                this.card!.setConfig(this.config);
+            }
+            catch (e) {
+                logger.log("Error updating card config: " + e.message);
+            }
 
             this.updateState();
         }
@@ -119,7 +128,18 @@ export class CardController {
                 localize: (key: string) => `[${key}]`
             }
 
-            this.card!.hass = hass;
+            try {
+                this.card!.hass = hass;
+            }
+            catch (e) {
+                logger.log("Error setting card state: " + e.message);
+            }
+
+            Storage.onUpdate({
+                cardSource: this.cardSource,
+                config: this.editor.config.getCode(),
+                hassState: JSON.parse(this.editor.state.getCode())
+            });
         }
         catch (e) {
             const searchString = "in JSON at position ";
@@ -144,7 +164,7 @@ export class CardController {
         // disabling button to avoid multiclick
         $("#save").prop("disabled", true);
 
-        Storage.save({
+        Storage.onSave({
             cardSource: data.cardSource,
             config: this.editor.config.getCode(),
             hassState: JSON.parse(this.editor.state.getCode())
@@ -172,7 +192,7 @@ export class CardController {
             $("#savedLink").val(output);
         }).catch(e => {
             $("#save").prop("disabled", false);
-            console.error(e);
+            logger.log(e.message);
         })
     }
 }

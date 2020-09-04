@@ -4,6 +4,11 @@ export interface IConfigData {
     hassState: any;
 }
 
+interface ISaveResult {
+    success: boolean;
+    id: string;
+}
+
 
 const example: IConfigData = {
     cardSource: "https://github.com/maxwroc/battery-state-card/releases/download/v1.4.0/battery-state-card.js",
@@ -82,16 +87,71 @@ filter:
 
 export class Storage {
 
+    /**
+     * Gets the data from various sources
+     */
+    static getData(): Promise<IConfigData> {
+
+        const url = new URL(location.href);
+        const key = url.searchParams.get("key");
+
+        if (key) {
+            return JsonBinData.get(key);
+        }
+
+        return new Promise((resolve, reject) => {
+            const result = LocalStorageData.get();
+            resolve(result || example);
+        });
+    }
+
+    /**
+     * Called when save button is hit
+     * @param data Data to save
+     */
+    static onSave(data: IConfigData): Promise<ISaveResult> {
+        return JsonBinData.save(data);
+    }
+
+    /**
+     * Called whenever editor state changes
+     * @param data Data to update
+     */
+    static onUpdate(data: IConfigData) {
+        LocalStorageData.save(data);
+    }
+}
+
+class LocalStorageData {
+
+    static key = "config";
+
+    static get(): IConfigData | null {
+        const rawConfig = localStorage.getItem(LocalStorageData.key);
+        if (rawConfig) {
+            return JSON.parse(rawConfig) as IConfigData;
+        }
+
+        return null;
+    }
+
+    static save(data: IConfigData) {
+        localStorage.setItem(LocalStorageData.key, JSON.stringify(data));
+    }
+}
+
+class JsonBinData {
+
     static secret = "$2b$10$/FL2EcEvEoUO19I7bO5da.q0YYqAgmTANU2kvh.WBP8FYTdP.6UYa";
 
-    static save(data: IConfigData): Promise<any> {
+    static save(data: IConfigData): Promise<ISaveResult> {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: `https://api.jsonbin.io/b`,
                 method: "POST",
                 contentType: "application/json",
                 headers: {
-                    "secret-key": Storage.secret
+                    "secret-key": JsonBinData.secret
                 },
                 data: JSON.stringify(data)
             })
@@ -107,29 +167,11 @@ export class Storage {
             $.ajax({
                 url: `https://api.jsonbin.io/b/${key}`,
                 headers: {
-                    "secret-key": Storage.secret
+                    "secret-key": JsonBinData.secret
                 }
             })
             .done(response => resolve(response))
             .fail(xhr => reject(xhr));
         });
-    }
-
-    static load(): Promise<IConfigData> {
-        const url = new URL(location.href);
-        const key = url.searchParams.get("key");
-        return new Promise((resolve, reject) => {
-            if (key) {
-                Storage.get(key)
-                    .then(result => resolve(result))
-                    .catch(xhr => {
-                        console.error(xhr);
-                        resolve(example);
-                    });
-                return ;
-            }
-
-            resolve(example);
-        })
     }
 }
