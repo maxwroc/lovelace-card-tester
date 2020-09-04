@@ -24,9 +24,15 @@
                     </div>
                 </ha-card>
                 <ha-card>
-                    <div class="card-header">Share</div>
-                    <div class="card-content" style="display: flex">
-                        <button id="save">Get url</button> <input type="text" placeholder="Generated url" id="savedLink" style="flex: 1; margin-left: 10px" />
+                    <div class="card-header">Manage</div>
+                    <div class="card-content">
+                        <div style="display: flex">
+                            <button id="loadCardSource">Load</button> <input type="text" placeholder="Card javascript file" id="cardSource" style="flex: 1; margin-left: 10px" />
+                        </div>
+                        <div style="display: flex">
+                            <button id="save">Get sharing url</button> <input type="text" placeholder="Generated url" id="savedLink" style="flex: 1; margin-left: 10px" />
+                        </div>
+
                     </div>
                 </ha-card>
             </div>
@@ -35,7 +41,7 @@
                 <ha-card>
                     <div class="card-header">Errors</div>
                     <div class="card-content">
-                        <pre id="errorLog"></pre>
+                        <pre id="errorLog" style="padding-bottom: 10px; overflow: auto"></pre>
                     </div>
                 </ha-card>
             </div>

@@ -21,8 +21,8 @@ export class CardController {
     cardLoaded = false;
 
     constructor(data: IConfigData) {
-        this.cardSource = data.cardSource;
         this.addCardSource(data.cardSource);
+        $("#cardSource").val(data.cardSource);
 
         this.editor = {
             config: new CodeFlask("#configEditor", { language: "yaml", lineNumbers: true }),
@@ -42,15 +42,37 @@ export class CardController {
 
         $("#save").click(() => this.save(data));
 
+        $("#loadCardSource").click(() => this.addCardSource($("#cardSource").val() as string, true))
+
         // start processing config
         this.updateConfig();
     }
 
-    addCardSource(source: string) {
+    addCardSource(source: string, reload = false) {
+        this.cardSource = source;
         const elem = document.createElement("script");
+
+        if (reload) {
+            elem.addEventListener("load", () => {
+                Storage.onUpdate({
+                    cardSource: this.cardSource,
+                    config: this.editor.config.getCode(),
+                    hassState: JSON.parse(this.editor.state.getCode())
+                });
+
+                location.reload();
+            });
+
+            elem.addEventListener("error", () => {
+                logger.log("Failed to load card source: " + source);
+                document.head.removeChild(elem);
+            });
+        }
+
         elem.setAttribute("src", source);
         elem.setAttribute("type", "text/javascript");
-        $("head").append(elem);
+
+        document.head.appendChild(elem);
     }
 
     loadCard() {

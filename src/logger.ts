@@ -3,7 +3,7 @@ class Logger {
     private elem: JQuery<HTMLPreElement> = <any>null;
 
     private container() {
-        if (this.elem) {
+        if (!this.elem) {
             this.elem = $("#errorLog");
         }
 
